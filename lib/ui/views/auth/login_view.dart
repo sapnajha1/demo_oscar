@@ -1,4 +1,6 @@
+import 'package:demo_oscar/ui/views/home/home_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/viewmodels/auth_viewmodel.dart';
@@ -12,6 +14,51 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+
+  var  googleSignInAccount;
+
+  GoogleLogin() async {
+    print('google login method called');
+
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+        // clientId:
+        // "127094237249-oomrst4eg2ir2q13dum6g4su6nb78n4f.apps.googleusercontent.com"
+    );
+    try {
+      var result = await _googleSignIn.signIn();
+      print(result);
+
+      googleSignInAccount = result;
+      if (result != null){
+        print("Signed in as: ${result}");
+        print("Signed in as: ${result.displayName}");
+        print("image link: ${result.photoUrl}");
+        print("Email-id: ${result.email}");
+        print("Authentication id: ${result.serverAuthCode}");
+        print("${result.id}");
+
+        print("mydata $googleSignInAccount");
+        print("google signin methood successful access");
+
+        // setuserData();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully Login'),),);
+        Navigator.push(context, MaterialPageRoute(builder: ((context) =>
+            MyHOme()
+            // Responsive_layout(
+            //    mobileScaffold: MobilePage(title: 'mobilepage',userdata:googleSignInAccount, ),
+            //    tabletScaffold: tabletPage(title: 'tabletpage',userdata:googleSignInAccount,),
+            //    desktopScaffold: DesktopPage(title: 'desktoppage',userdata:googleSignInAccount, selectedLevel: '', ))
+        )));
+      }
+      else{
+        print("Signin-canceled");
+      }
+    } catch (error)
+    {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -56,6 +103,8 @@ class _LoginViewState extends State<LoginView> {
             ),
 
             SizedBox(height: screenHeight * 0.05),
+            ElevatedButton(onPressed: (){GoogleLogin();}, child: Container(child: Text("Login"),))
+
             // Consumer<LoginViewModel>(
             //   builder: (context, viewModel, child) {
             //     return CustomButton(
